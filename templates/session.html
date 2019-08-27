@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Flask_Chat_App</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="awesomplete.css" />
+</head>
+<body>
+
+<div class="container">
+<div class="row">
+  <div class="col-sm-6 offset-3">
+
+    <div id="chat-container" class="card">
+      <div class="card-header text-white text-center font-weight-bold subtle-blue-gradient">
+        Share the page URL to invite new friends
+      </div>
+
+      <div class="card-body">
+        <div class="container chat-body">
+          <!-- <div class="row chat-section message_holder">
+            <div class="col-sm-7 offset-3">
+              <p class="card-text speech-bubble speech-bubble-user float-right text-white subtle-blue-gradient">
+                Okay i'm already hacking around let me see what i can do to this thing.
+              </p>
+            </div>
+            <div class="col-sm-2">
+              <img class="rounded-circle" src="http://placehold.it/40/333333/fff&text=A" />
+            </div>
+          </div> -->
+          <div class="message_holder">
+            <!-- (/-w-)/ -->
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer text-muted">
+      	<div class="row suggestion">
+      		<!-- <div class="col-sm-2">E</div>
+      		<div class="col-sm-2">E</div>
+      		<div class="col-sm-2">E</div> -->
+      	</div>
+      	<form action="" method="POST">
+          <div class="row">
+            <div class="col-sm-10">
+              <input type="text" class='message' placeholder="Type a message"/>
+            </div>
+            <div class="col-sm-2">
+              <button class="btn btn-primary">Send</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+</div>
+</div>
+
+<!-- <h3 style='color: #ccc;font-size: 30px;'>No message yet..</h3>
+<div class="message_holder"></div>
+
+<form action="" method="POST">
+  <input type="text" class="username" placeholder="User Name"/>
+  <input type="text" class="message" placeholder="Messages"/>
+  <input type="submit"/>
+</form> -->
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="awesomplete.js" async></script>
+<script type="text/javascript">
+  var msg_id = 0
+  var socket = io.connect('http://' + document.domain + ':' + location.port);
+  socket.on( 'connect', function() {
+    socket.emit( 'my event', {
+      data: 'User Connected'
+    } )
+    var form = $( 'form' ).on( 'submit', function( e ) {
+      e.preventDefault()
+
+      let user_input = $( 'input.message' ).val()
+      socket.emit( 'my event', {
+        user_name : 'Guest',
+        message : user_input,
+        data : ''
+      } )
+      $( 'input.message' ).val( '' ).focus()
+    } )
+
+    $('input').on('keyup', function() {
+	     if (this.value.length > 1) {
+	     	socket.emit('typing',{ data : this.value, length : this.value.length})
+	     }
+	})
+  } )
+  socket.on( 'my response', function( msg ) {
+    console.log( msg )
+    if( typeof msg.user_name !== 'undefined' ) {
+      // $( 'h3' ).remove()
+      // $( 'div.message_holder' ).append( '<div><b style="color: #000">'+msg.user_name+'</b> '+msg.message+'</div>' )
+      $('div.message_holder').append(
+      		'<div class="row chat-section">'+
+		      	'<div class="col-sm-7 offset-3">'+
+	              '<p class="card-text speech-bubble speech-bubble-user float-right text-white subtle-blue-gradient">'+
+	                msg.message+
+	              '</p>'+
+	            '</div>'+
+	            '<div class="col-sm-2">'+
+	              '<img class="rounded-circle" src="http://placehold.it/40/333333/fff&text=G" />'+
+	            '</div>'+
+            '</div>'
+        )
+    }
+  })
+  socket.on( 'bot response', function( msg ) {
+    console.log( msg )
+	$('div.message_holder').append(
+		'<div class="row chat-section">'+
+	        '<div class="col-sm-2">'+
+	        	'<img class="rounded-circle" src="http://placehold.it/40/f16000/fff&text=B" />'+
+	        '</div>'+
+        '<div class="col-sm-7">'+
+			'<p class="card-text speech-bubble speech-bubble-peer">'+
+				msg.message+
+			'</p>'+
+        '</div>'+
+      '</div>'
+	)
+  })
+  socket.on('get suggestion', function(msg){
+  	console.log( msg )
+
+  	$('div.option').remove()
+
+  	str = ""
+  	for (var i = 0; i < msg.suggestion.length; i++) {
+  		str = str + '<div class="col-sm-2 option">' + msg.suggestion[i] + '</div>'
+  	}
+
+  	$('div.suggestion').append(str)
+  })
+</script>
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+h1,
+h2 {
+  font-weight: normal;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.btn {
+  border-radius: 0 !important;
+}
+
+.card-footer input[type="text"] {
+  background-color: #ffffff;
+  color: #444444;
+  padding: 7px;
+  font-size: 13px;
+  border: 2px solid #cccccc;
+  width: 100%;
+  height: 38px;
+}
+
+.card-header a {
+  text-decoration: underline;
+}
+
+.card-body {
+  background-color: #ddd;
+}
+
+.chat-body {
+  margin-top: -15px;
+  margin-bottom: -5px;
+  height: 380px;
+  overflow-y: auto;
+}
+
+.speech-bubble {
+  display: inline-block;
+  position: relative;
+  border-radius: 0.4em;
+  padding: 10px;
+  background-color: #fff;
+  font-size: 14px;
+}
+
+.subtle-blue-gradient {
+  background: linear-gradient(45deg,#004bff, #007bff);
+}
+
+.speech-bubble-user:after {
+  content: "";
+  position: absolute;
+  right: 4px;
+  top: 10px;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-left-color: #007bff;
+  border-right: 0;
+  border-top: 0;
+  margin-top: -10px;
+  margin-right: -20px;
+}
+
+.speech-bubble-peer:after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 10px;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-right-color: #ffffff;
+  border-top: 0;
+  border-left: 0;
+  margin-top: -10px;
+  margin-left: -20px;
+}
+
+.chat-section:first-child {
+  margin-top: 10px;
+}
+
+.chat-section {
+  margin-top: 15px;
+}
+
+.send-section {
+  margin-bottom: -20px;
+  padding-bottom: 10px;
+}
+</style>
+</body>
+</html>
