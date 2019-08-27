@@ -8,7 +8,6 @@ Yang diperlukan:
 Cara memakai:
 1. Download semuanya, masukkan ke dalam folder
 2. Buka CMD, masuk ke direktori folder tempat di-download
-3. Ketik:
-set FLASK_APP=main.py
-python -m flask
-4. Chatbot bisa dipakai di browser pada 127.0.0.1:5000
+3. Ketik: set FLASK_APP=main.py
+4. Ketik: python -m flask
+5. Chatbot bisa dipakai di browser pada 127.0.0.1:5000
